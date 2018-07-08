@@ -7,7 +7,7 @@
 
 T3SPI SPI_MASTER; //Initialize T3SPI class as SPI_MASTER
 
-FlexCAN CAN_Umsteigen(500000);
+FlexCAN CAN_Transfer(500000);
 static CAN_message_t txmsg,rxmsg;
 
 //The number of integers per data packet
@@ -27,8 +27,9 @@ volatile uint8_t returnData2[dataLength2] = {};
 
 void setup(){
   Serial.begin(115200);
-  CAN_Umsteigen.begin();
+  CAN_Transfer.begin();
   
+  //setup for SPI master
   SPI_MASTER.begin_MASTER(SCK, MOSI, MISO, CS0, CS_ActiveLOW);
   SPI_MASTER.setCTAR(CTAR0,8,SPI_MODE0,LSB_FIRST,SPI_CLOCK_DIV128);
 
@@ -42,7 +43,7 @@ void setup(){
 }
 
 void loop(){
-  if( CAN_Umsteigen.read(rxmsg)){ //from ECU
+  if( CAN_Transfer.read(rxmsg)){ //from ECU
     Serial.println("Receiving from CAN Master: ");
     Serial.print("ID= ");
     Serial.println(rxmsg.id,HEX);
@@ -64,8 +65,6 @@ void loop(){
     digitalWrite(21,LOW);
     SPI_MASTER.txrx8(data0, returnData0, dataLength0,CTAR0,CS3);
     delayMicroseconds(10);
-    delayMicroseconds(10);
-    delayMicroseconds(10);
     digitalWrite(21,HIGH);
     SPI_MASTER.packetCT=0;}//Reset the packet count 
     
@@ -73,15 +72,11 @@ void loop(){
     digitalWrite(20,LOW);
     SPI_MASTER.txrx8(data1, returnData1, dataLength1,CTAR0,CS2);
     delayMicroseconds(10);
-    delayMicroseconds(10);
-    delayMicroseconds(10);
     digitalWrite(20,HIGH);SPI_MASTER.packetCT=0;}
     
   for (int i=0; i<1; i++) {
     digitalWrite(10,LOW);
     SPI_MASTER.txrx8(data2, returnData2, dataLength2,CTAR0,CS0); 
-    delayMicroseconds(10);
-    delayMicroseconds(10);
     delayMicroseconds(10);
     digitalWrite(10,HIGH);SPI_MASTER.packetCT=0;}
     
@@ -112,7 +107,7 @@ void loop(){
     txmsg.buf[i] = returnData0[i+1];
     Serial.print(txmsg.buf[i]); Serial.print(" ");}
   Serial.println("");
-  CAN_Umsteigen.write(txmsg);
+  CAN_Transfer.write(txmsg);
 
   Serial.print("Data from Slave1: ");
   txmsg.id = 0x210;
@@ -121,7 +116,7 @@ void loop(){
     txmsg.buf[i] = returnData1[i+1];
     Serial.print(txmsg.buf[i]); Serial.print(" ");}
   Serial.println("");
-  CAN_Umsteigen.write(txmsg);
+  CAN_Transfer.write(txmsg);
   
   Serial.print("Data from Slave2: ");
   txmsg.id = 0x220;
@@ -130,7 +125,7 @@ void loop(){
     txmsg.buf[i] = returnData2[i+1];
     Serial.print(txmsg.buf[i]); Serial.print(" ");}
   Serial.println("");
-  CAN_Umsteigen.write(txmsg);
+  CAN_Transfer.write(txmsg);
 
   Serial.println("");
   Serial.println("CAN SPI Umsteigen");
