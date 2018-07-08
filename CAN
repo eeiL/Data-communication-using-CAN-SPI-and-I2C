@@ -1,0 +1,81 @@
+'''C
+#include <FlexCAN.h>
+#include <kinetis_flexcan.h>
+#include <TimerOne.h>
+
+int led = 13;
+// create CAN object
+FlexCAN CANReceiver(500000);
+static CAN_message_t msg;
+
+void setup() {
+  // init CAN bus
+  Serial.begin(9600);
+  CANReceiver.begin();
+  pinMode(led, OUTPUT); 
+  Timer1.initialize(10000);
+  Timer1.attachInterrupt(ECU);
+  delay(1000);
+  Serial.println("CAN Receiver Initialized");
+}
+
+void ECU(void){
+  while( CANReceiver.read(msg)) {
+  //if( CANReceiver.available()){
+    //digitalWrite(led, !digitalRead(led));
+    if(msg.id == 0x175){
+      Serial.print("ID=0x175: ");
+      for(int i=0; i<msg.len; i++) {
+      Serial.print(msg.buf[i], HEX); Serial.print(", ");
+    }
+    Serial.println("");
+    }
+    else if(msg.id == 0x179){
+      Serial.print("ID=0x179: ");
+      for(int i=0; i<msg.len; i++) {
+      Serial.print(msg.buf[i], HEX); Serial.print(", ");
+    }
+    Serial.println("");
+    }
+    else if(msg.id == 0x17D){
+      Serial.print("ID=0x17D: ");
+      for(int i=0; i<msg.len; i++) {
+      Serial.print(msg.buf[i], HEX); Serial.print(", ");
+    }
+    Serial.println("");
+    }
+    Serial.println("");
+ }
+}
+
+void loop() {
+  
+  
+    /*
+    //Serial.print("Receiving: ");
+    if(msg.id == 0x175){
+    uint8_t Yaw_L = uint8_t(msg.buf[0]);
+    uint8_t Yaw_H = uint8_t(msg.buf[1]);
+    uint16_t Yaw = Yaw_H * pow(2,8) + Yaw_L; // Yaw_H << 8 ist falsch!
+    double Yaw_rate = (Yaw - 0x8000) * 0.005 - 0.187528753;
+    Serial.print("current yaw rate is: ");
+    Serial.print(Yaw_rate, DEC);
+    Serial.println(" deg/s");
+    //Serial.println(" °/s");
+    delay(200);
+    //Serial.print(Yaw_rate, DEC);
+    //Serial.print(" ");
+        
+    ///*
+    Serial.print("Receiving: ");
+    Serial.print("ID= ");
+    Serial.print(msg.id, HEX); Serial.print(" DATA: ");
+    for(int i=0; i<msg.len; i++) {
+    //for(int i=0; i<2; i++) {
+      Serial.print(msg.buf[i], HEX); Serial.print(", ");
+    }
+    Serial.println("");
+    //*/
+}
+
+'''
