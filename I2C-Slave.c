@@ -4,15 +4,14 @@
 
 int led = 13;
 int Data[8];
-int returnData[8];// = {11,22,33,44,55,66,77,88}; //COM 10
-//int returnData[8] = {0x88,0x77,0x66,0x55,0x44,0x33,0x22,0x11}; //COM 12, HEX
+int returnData[8];// = {11,22,33,44,55,66,77,88};
 int flag_receive = 0;
-//int i,j,k;
+
 
 void setup() {
-  //Wire.begin(8);                // join i2c bus with COM 10
-  Wire.begin(10);                // join i2c bus with COM 12
-  //Wire.begin(12);                // join i2c bus with COM 6
+  //Wire.begin(8);                // Slave1 join i2c bus with COM 10
+  Wire.begin(10);                // Slave2 join i2c bus with COM 12
+  //Wire.begin(12);               // Slave3 join i2c bus with COM 6
   Wire.onReceive(receiveEvent); // register event
   Wire.onRequest(requestEvent);
   Serial.begin(115200);           // start serial for output
