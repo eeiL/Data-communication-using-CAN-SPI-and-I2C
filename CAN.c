@@ -1,7 +1,3 @@
-nigne
-
-```C
-
 #include <FlexCAN.h>
 #include <kinetis_flexcan.h>
 #include <TimerOne.h>
@@ -33,7 +29,7 @@ void ECU(void){
     if(msg.id == 0x100){
       Serial.print("ID=0x100: ");
       for(int i=0; i<msg.len; i++) {
-      Serial.print(msg.buf[i], HEX); Serial.print(", ");
+      Serial.print(msg.buf[i], HEX); Serial.print(", "); //print date on the screen
     }
     Serial.println("");
     }
@@ -61,32 +57,5 @@ void ECU(void){
 
 void loop() {
   
-  
-    /*
-    //Serial.print("Receiving: ");
-    if(msg.id == 0x175){
-    uint8_t Yaw_L = uint8_t(msg.buf[0]);
-    uint8_t Yaw_H = uint8_t(msg.buf[1]);
-    uint16_t Yaw = Yaw_H * pow(2,8) + Yaw_L; // Yaw_H << 8 ist falsch!
-    double Yaw_rate = (Yaw - 0x8000) * 0.005 - 0.187528753;
-    Serial.print("current yaw rate is: ");
-    Serial.print(Yaw_rate, DEC);
-    Serial.println(" deg/s");
-    //Serial.println(" °/s");
-    delay(200);
-    //Serial.print(Yaw_rate, DEC);
-    //Serial.print(" ");
-        
-    ///*
-    Serial.print("Receiving: ");
-    Serial.print("ID= ");
-    Serial.print(msg.id, HEX); Serial.print(" DATA: ");
-    for(int i=0; i<msg.len; i++) {
-    //for(int i=0; i<2; i++) {
-      Serial.print(msg.buf[i], HEX); Serial.print(", ");
-    }
-    Serial.println("");
-    //*/
 }
 
-```
